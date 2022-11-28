@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Exercise_3</string>
+    <string name="register">Register</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="todo">TODO</string>
+    <string name="username">UserName</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="email">Email</string>
+</resources>
