@@ -169,10 +169,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean validUser(String userName, String password) {
         if (!studentList.isEmpty()) {
             student = studentList.stream().filter(student -> userName.equals(student.getUserName())).findFirst().orElse(null);
-            String selectedPassword = student.getPassword();
-            if (student != null && selectedPassword.equalsIgnoreCase(password)) {
-                return true;
-            } else {
+            if (student != null) {
+                String selectedPassword = student.getPassword();
+                if (selectedPassword.equals(password)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }else{
                 return false;
             }
         } else {
