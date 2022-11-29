@@ -12,8 +12,12 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         infoTV = findViewById(R.id.infoTV);
-
-        String sessionId = getIntent().getStringExtra("User");
+        String userName = getIntent().getStringExtra("UserName");
+        String password = getIntent().getStringExtra( "Password");
+        String firstName = getIntent().getStringExtra("FirstName");
+        String lastName = getIntent().getStringExtra("LastName");
+        String email = getIntent().getStringExtra("Email");
+        infoTV.setText("User Name : "+userName + "\nPassword : " + password + "\nFirst Name : " + firstName + "\nLast Name : " + lastName + "\nEmail : " +  email );
     }
 }
 

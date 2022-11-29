@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener  {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ViewGroup root;
     private boolean loginEnable;
     private EditText userName;
@@ -26,8 +26,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button loginButton;
     private RadioButton login;
     private RadioButton register;
-
+    private Student student;
     private ArrayList<Student> studentList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void viewEnable(){
-        if(loginEnable){
+    private void viewEnable() {
+        if (loginEnable) {
             userName.setVisibility(View.VISIBLE);
             password.setVisibility(View.VISIBLE);
             firstName.setVisibility(View.GONE);
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             email.setVisibility(View.GONE);
 
             loginButton.setText("Login");
-        }else{
+        } else {
             userName.setVisibility(View.VISIBLE);
             password.setVisibility(View.VISIBLE);
             firstName.setVisibility(View.VISIBLE);
@@ -88,23 +89,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void buttonClicked(){
-        if(loginEnable){
-            if(validUser()) {
-
-                navigateToHome();
-            }else{
-                Toast.makeText(MainActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
-
+    private void buttonClicked() {
+        String uName = userName.getText().toString();
+        String pass = password.getText().toString();
+        String fName = firstName.getText().toString();
+        String lName = lastName.getText().toString();
+        String userEmail = email.getText().toString();
+        if (uName.isEmpty()) {
+            Toast.makeText(MainActivity.this, "UserName cannot be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (pass.isEmpty()) {
+            Toast.makeText(MainActivity.this, "password cannot be empty.", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            if (loginEnable) {
+                if (validUser(uName, pass)) {
+                    navigateToHome();
+                    clearFields();
+                } else {
+                    Toast.makeText(MainActivity.this, "Invalid Username or Password", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                if (fName.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "First name cannot be empty.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (lName.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Last name cannot be empty.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (userEmail.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Email cannot be empty.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.logo)
+                            .setPositiveButton("Yes", (dialog, which) -> userRegistered(uName, pass, fName, lName, userEmail))
+                            .setTitle("Are you sure?")
+                            .setNegativeButton("No", null)
+                            .create()
+                            .show();
+                }
             }
-        }else{
-            new AlertDialog.Builder(this)
-                    .setIcon(R.drawable.logo)
-                    .setPositiveButton("Yes", (dialog, which) -> userRegistered())
-                    .setTitle("Are you sure?")
-                    .setNegativeButton("No", null)
-                    .create()
-                    .show();
         }
     }
 
@@ -116,17 +140,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         email.setText("");
     }
 
-    private void userRegistered(){
-        if(userExist()){
+    private void userRegistered(String uName, String pass, String fName, String lName, String userEmail) {
+        if (userExist(uName)) {
             Toast.makeText(MainActivity.this, "This username has been taken.", Toast.LENGTH_SHORT).show();
             userName.setText("");
-        }else {
-            String uName =  userName.getText().toString();
-            String pass =  password.getText().toString();
-            String fName =  firstName.getText().toString();
-            String lName =  lastName.getText().toString();
-            String userEmail =  email.getText().toString();
-            Student student = new Student(uName,pass,fName,lName,userEmail);
+        } else {
+            Student student = new Student(uName, pass, fName, lName, userEmail);
             studentList.add(student);
 
             Toast.makeText(MainActivity.this, "You have been successfully registered.", Toast.LENGTH_SHORT).show();
@@ -134,22 +153,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             login.setChecked(true);
             loginEnable = true;
             viewEnable();
-
         }
     }
 
-    private void navigateToHome(){
+    private void navigateToHome() {
         Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-        intent.putExtra("User", "User Name");
+        intent.putExtra( "UserName",student.getUserName());
+        intent.putExtra("Password",student.getPassword());
+        intent.putExtra( "FirstName",student.getFirstName());
+        intent.putExtra("LastName",student.getLastName());
+        intent.putExtra("Email",student.getEmail());
         startActivity(intent);
     }
 
-    private boolean validUser(){
-        return true;
+    private boolean validUser(String userName, String password) {
+        if (!studentList.isEmpty()) {
+            student = studentList.stream().filter(student -> userName.equals(student.getUserName())).findFirst().orElse(null);
+            String selectedPassword = student.getPassword();
+            if (student != null && selectedPassword.equalsIgnoreCase(password)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
-    private boolean userExist(){
-        
-        return true;
+    private boolean userExist(String userName) {
+//        if (studentList.contains(userName)) {
+//            return true;
+//        }
+//        return false;
+
+        if (studentList.stream().filter(student -> userName.equals(student.getUserName())).findFirst().orElse(null) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
