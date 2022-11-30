@@ -1,6 +1,8 @@
 package com.example.exercise_3;
 
-public class Student {
+import java.io.Serializable;
+
+public class Student implements Serializable {
     private String userName;
     private String password;
     private String firstName;

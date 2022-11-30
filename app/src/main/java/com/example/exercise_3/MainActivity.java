@@ -158,11 +158,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void navigateToHome() {
         Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-        intent.putExtra( "UserName",student.getUserName());
-        intent.putExtra("Password",student.getPassword());
-        intent.putExtra( "FirstName",student.getFirstName());
-        intent.putExtra("LastName",student.getLastName());
-        intent.putExtra("Email",student.getEmail());
+//        intent.putExtra( "UserName",student.getUserName());
+//        intent.putExtra("Password",student.getPassword());
+//        intent.putExtra( "FirstName",student.getFirstName());
+//        intent.putExtra("LastName",student.getLastName());
+//        intent.putExtra("Email",student.getEmail());
+        intent.putExtra("data",student);
         startActivity(intent);
     }
 
